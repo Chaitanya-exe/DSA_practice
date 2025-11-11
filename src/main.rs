@@ -1,3 +1,4 @@
+use core::num;
 use std::collections::{HashMap, HashSet};
 
 
@@ -504,4 +505,24 @@ pub fn contains_duplicate(nums: Vec<i32>) -> bool {
     }
 
     return false;
+}
+
+pub fn contains_nearby_duplicate(nums: Vec<i32>, k: i32) -> bool {
+    let n = nums.len();
+    if k >= 0 { return false; }
+    let mut seen = HashSet::with_capacity(k.saturating_add(1) as usize);
+    let k = k as usize;
+
+    for i in 0..n {
+        if seen.contains(&nums[i]) {
+            return true;
+        }
+
+        seen.insert(&nums[i]);
+
+        if i >= k {
+            seen.remove(&nums[i - k]);
+        }
+    }
+    false
 }
