@@ -526,3 +526,27 @@ pub fn contains_nearby_duplicate(nums: Vec<i32>, k: i32) -> bool {
     }
     false
 }
+
+pub fn is_anagram(s: String, t: String) -> bool {
+    if t.len() != s.len() { return false; }
+
+    let mut s_freq = HashMap::new();
+    let mut t_freq = HashMap::new();
+
+    let s_chars = s.chars().collect::<Vec<char>>();
+    let t_chars = t.chars().collect::<Vec<char>>();
+
+    let mut i = 0;
+
+    while i < s.len() {
+        *s_freq.entry(&s_chars[i]).or_insert(0) += 1;
+        *t_freq.entry(&t_chars[i]).or_insert(0) += 1;
+        i += 1;
+    }
+
+    if s_freq == t_freq {
+        return true;
+    } else {
+        return false;
+    }
+}
