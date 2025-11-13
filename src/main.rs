@@ -550,3 +550,15 @@ pub fn is_anagram(s: String, t: String) -> bool {
         return false;
     }
 }
+
+pub fn product_except_self(nums: Vec<i32>) -> Vec<i32> {
+    let mut prefix_product = HashMap::new();
+    let mut product = 1;
+
+    for (i, num) in nums.iter().enumerate() {
+        product = product *num;
+        prefix_product.insert(i, product);
+    }
+
+    return vec![];  
+}
