@@ -557,3 +557,16 @@ pub fn product_except_self(nums: Vec<i32>) -> Vec<i32> {
     }
     result
 }
+
+pub fn dfs(node: usize, parent: usize, tree: &Vec<Vec<i32>>, values: &Vec<i32>, ans: &mut Vec<i32>) -> i32{
+    let mut subtotal = values[node];
+
+    for &child in &tree[node] {
+        if child as usize == parent { continue; }
+
+        subtotal += dfs(child as usize, node, tree, values, ans);
+    }
+    ans[node] = subtotal;
+    
+    subtotal
+}
