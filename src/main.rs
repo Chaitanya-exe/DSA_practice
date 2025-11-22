@@ -624,5 +624,5 @@ pub fn min_tree_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32{
 }
 
 pub fn minimum_operations(nums: Vec<i32>) -> i32 {
-    nums.iter().filter(|&x| *x % 3 == 0).collect::<Vec<&i32>>().len() as i32
+    nums.iter().filter(|&x| *x % 3 != 0).collect::<Vec<&i32>>().len() as i32
 }
