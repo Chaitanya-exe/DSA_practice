@@ -1,5 +1,21 @@
 use core::num;
 use std::collections::{HashMap, HashSet};
+use std::rc::Rc;
+use std::cell::RefCell;
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    val: i32,
+    left: Option<Rc<RefCell<TreeNode>>>,
+    right: Option<Rc<RefCell<TreeNode>>>
+}
+
+impl TreeNode{
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode { val, left: None, right: None }
+    }
+}
 
 fn main() {
     let nums = vec![5, 5, 5, 5];
@@ -558,15 +574,33 @@ pub fn product_except_self(nums: Vec<i32>) -> Vec<i32> {
     result
 }
 
-pub fn dfs(node: usize, parent: usize, tree: &Vec<Vec<i32>>, values: &Vec<i32>, ans: &mut Vec<i32>) -> i32{
+pub fn dfs_algorithm(node: usize, parent: usize, tree: &Vec<Vec<i32>>, values: &Vec<i32>, ans: &mut Vec<i32>) -> i32{
     let mut subtotal = values[node];
 
     for &child in &tree[node] {
         if child as usize == parent { continue; }
 
-        subtotal += dfs(child as usize, node, tree, values, ans);
+        subtotal += dfs_algorithm(child as usize, node, tree, values, ans);
     }
     ans[node] = subtotal;
     
     subtotal
 }
+
+pub fn max_tree_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32{
+    fn dfs(node: &Option<Rc<RefCell<TreeNode>>>) -> i32{
+        match node {
+            None => 0,
+            Some(ref_cell) => {
+                let n = ref_cell.borrow();
+                let left_depth = dfs(&n.left);
+                let right_depth = dfs(&n.right);
+                1 + left_depth.max(right_depth)
+            }
+        }
+    }
+
+    dfs(&root)
+}
+
+
