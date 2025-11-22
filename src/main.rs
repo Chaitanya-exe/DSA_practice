@@ -603,4 +603,26 @@ pub fn max_tree_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32{
     dfs(&root)
 }
 
+pub fn min_tree_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32{
+    fn dfs(node: &Option<Rc<RefCell<TreeNode>>>) -> i32{
+        match node {
+            None => 0,
+            Some(ref_cell) => {
+                let n = ref_cell.borrow();
+                let left_depth = dfs(&n.left);
+                let right_depth = dfs(&n.right);
+                if left_depth == 0 || right_depth == 0 {
+                    1+left_depth+right_depth
+                } else {
+                    1+ left_depth.min(right_depth)
+                }
+            }
+        }
+    }
 
+    dfs(&root)
+}
+
+pub fn minimum_operations(nums: Vec<i32>) -> i32 {
+    nums.iter().filter(|&x| *x % 3 == 0).collect::<Vec<&i32>>().len() as i32
+}
