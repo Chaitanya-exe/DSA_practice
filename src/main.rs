@@ -1,4 +1,5 @@
 use core::num;
+use std::array;
 use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -18,13 +19,18 @@ impl TreeNode{
 }
 
 fn main() {
-    let nums = vec![5, 5, 5, 5];
-    let k = 2;
-    assert_eq!(painter_problem(nums, k), 10);
-    let nums = vec![10, 20, 30, 40];
-    let k = 2;
-    assert_eq!(painter_problem(nums, k), 60);
-    println!("Tests passed successfully.");
+    let mut tree: Vec<Vec<i32>> = vec![vec![]; 10];
+    add_edge(&mut tree, 0, 1);
+    add_edge(&mut tree, 0, 2);
+    add_edge(&mut tree, 2, 3);
+    add_edge(&mut tree, 2, 4);
+    add_edge(&mut tree, 1, 6);
+    add_edge(&mut tree, 1, 7);
+    add_edge(&mut tree, 4, 8);
+    add_edge(&mut tree, 4, 9);
+
+    let depth = max_depth(&tree, 0);
+    println!("Max depth: {}", depth);
 }
 
 fn count_painters(boards: &Vec<i32>, mid: &i32) -> i32 {
@@ -625,4 +631,57 @@ pub fn min_tree_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32{
 
 pub fn minimum_operations(nums: Vec<i32>) -> i32 {
     nums.iter().filter(|&x| *x % 3 != 0).collect::<Vec<&i32>>().len() as i32
+}
+
+
+pub fn min_operations(nums: Vec<i32>, k: i32) -> i32 {
+    nums.iter().sum::<i32>() % k
+}
+
+fn add_edge(tree: &mut Vec<Vec<i32>>, u: i32, v: i32) {
+    tree[u as usize].push(v);
+    tree[v as usize].push(u);
+}
+
+pub fn max_depth_adj_list(tree: &Vec<Vec<i32>>, parent: i32, node: i32) -> i32 {
+    let mut best_child_depth = 0;
+
+    for &child in &tree[node as usize] {
+        if child == parent {
+            continue;
+        }
+        let depth_child = max_depth_adj_list(tree, node, child);
+        best_child_depth = best_child_depth.max(depth_child);
+    }
+
+    1 + best_child_depth
+}
+
+pub fn max_depth(tree: &Vec<Vec<i32>>, root: i32) -> i32{
+    max_depth_adj_list(tree, -1, root)
+}
+
+pub fn is_same_tree(p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeNode>>>) -> bool {
+
+    fn traverse(p: &Option<Rc<RefCell<TreeNode>>>, q: &Option<Rc<RefCell<TreeNode>>>) -> bool {
+        match (p, q) {
+            (Some(node1), Some(node2)) => {
+                let node1 = node1.borrow(); let node2 = node2.borrow();
+
+                if node1.val != node2.val { return false; }
+                else {
+                    let check_left = traverse(&node1.left, &node2.left);
+                    let check_right = traverse(&node1.right, &node2.right);
+
+                    match (check_left, check_right) {
+                        (true, true) => true,
+                        _ => false
+                    }
+                }
+            },
+            _ => false        
+        }
+    }  
+
+    traverse(&p, &q)  
 }
