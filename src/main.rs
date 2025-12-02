@@ -679,9 +679,19 @@ pub fn is_same_tree(p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeN
                     }
                 }
             },
+            (None, None) => false,
             _ => false        
         }
     }  
 
     traverse(&p, &q)  
 }
+
+// pub fn max_run_time(n: i32, batteries: Vec<i32>) -> i32 {
+//     let mut batteries = batteries.clone();
+//     if n > batteries.len() as i32 { return 0; }
+//     if n == 1 { return batteries.iter().sum::<i32>();}
+
+
+// } Do later...
+
