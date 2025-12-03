@@ -1,20 +1,24 @@
 use core::num;
 use std::array;
+use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
-use std::cell::RefCell;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct TreeNode {
     val: i32,
     left: Option<Rc<RefCell<TreeNode>>>,
-    right: Option<Rc<RefCell<TreeNode>>>
+    right: Option<Rc<RefCell<TreeNode>>>,
 }
 
-impl TreeNode{
+impl TreeNode {
     #[inline]
     pub fn new(val: i32) -> Self {
-        TreeNode { val, left: None, right: None }
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
     }
 }
 
@@ -580,21 +584,29 @@ pub fn product_except_self(nums: Vec<i32>) -> Vec<i32> {
     result
 }
 
-pub fn dfs_algorithm(node: usize, parent: usize, tree: &Vec<Vec<i32>>, values: &Vec<i32>, ans: &mut Vec<i32>) -> i32{
+pub fn dfs_algorithm(
+    node: usize,
+    parent: usize,
+    tree: &Vec<Vec<i32>>,
+    values: &Vec<i32>,
+    ans: &mut Vec<i32>,
+) -> i32 {
     let mut subtotal = values[node];
 
     for &child in &tree[node] {
-        if child as usize == parent { continue; }
+        if child as usize == parent {
+            continue;
+        }
 
         subtotal += dfs_algorithm(child as usize, node, tree, values, ans);
     }
     ans[node] = subtotal;
-    
+
     subtotal
 }
 
-pub fn max_tree_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32{
-    fn dfs(node: &Option<Rc<RefCell<TreeNode>>>) -> i32{
+pub fn max_tree_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    fn dfs(node: &Option<Rc<RefCell<TreeNode>>>) -> i32 {
         match node {
             None => 0,
             Some(ref_cell) => {
@@ -609,8 +621,8 @@ pub fn max_tree_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32{
     dfs(&root)
 }
 
-pub fn min_tree_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32{
-    fn dfs(node: &Option<Rc<RefCell<TreeNode>>>) -> i32{
+pub fn min_tree_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    fn dfs(node: &Option<Rc<RefCell<TreeNode>>>) -> i32 {
         match node {
             None => 0,
             Some(ref_cell) => {
@@ -618,9 +630,9 @@ pub fn min_tree_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32{
                 let left_depth = dfs(&n.left);
                 let right_depth = dfs(&n.right);
                 if left_depth == 0 || right_depth == 0 {
-                    1+left_depth+right_depth
+                    1 + left_depth + right_depth
                 } else {
-                    1+ left_depth.min(right_depth)
+                    1 + left_depth.min(right_depth)
                 }
             }
         }
@@ -630,9 +642,11 @@ pub fn min_tree_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32{
 }
 
 pub fn minimum_operations(nums: Vec<i32>) -> i32 {
-    nums.iter().filter(|&x| *x % 3 != 0).collect::<Vec<&i32>>().len() as i32
+    nums.iter()
+        .filter(|&x| *x % 3 != 0)
+        .collect::<Vec<&i32>>()
+        .len() as i32
 }
-
 
 pub fn min_operations(nums: Vec<i32>, k: i32) -> i32 {
     nums.iter().sum::<i32>() % k
@@ -657,34 +671,35 @@ pub fn max_depth_adj_list(tree: &Vec<Vec<i32>>, parent: i32, node: i32) -> i32 {
     1 + best_child_depth
 }
 
-pub fn max_depth(tree: &Vec<Vec<i32>>, root: i32) -> i32{
+pub fn max_depth(tree: &Vec<Vec<i32>>, root: i32) -> i32 {
     max_depth_adj_list(tree, -1, root)
 }
 
 pub fn is_same_tree(p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeNode>>>) -> bool {
-
     fn traverse(p: &Option<Rc<RefCell<TreeNode>>>, q: &Option<Rc<RefCell<TreeNode>>>) -> bool {
         match (p, q) {
             (Some(node1), Some(node2)) => {
-                let node1 = node1.borrow(); let node2 = node2.borrow();
+                let node1 = node1.borrow();
+                let node2 = node2.borrow();
 
-                if node1.val != node2.val { return false; }
-                else {
+                if node1.val != node2.val {
+                    return false;
+                } else {
                     let check_left = traverse(&node1.left, &node2.left);
                     let check_right = traverse(&node1.right, &node2.right);
 
                     match (check_left, check_right) {
                         (true, true) => true,
-                        _ => false
+                        _ => false,
                     }
                 }
-            },
+            }
             (None, None) => false,
-            _ => false        
+            _ => false,
         }
-    }  
+    }
 
-    traverse(&p, &q)  
+    traverse(&p, &q)
 }
 
 // pub fn max_run_time(n: i32, batteries: Vec<i32>) -> i32 {
@@ -692,6 +707,27 @@ pub fn is_same_tree(p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeN
 //     if n > batteries.len() as i32 { return 0; }
 //     if n == 1 { return batteries.iter().sum::<i32>();}
 
-
 // } Do later...
 
+pub fn invert_tree(root: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
+    fn invert(node: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
+        if let Some(ref_node) = node {
+            let mut n = ref_node.borrow_mut();
+
+            let left = n.left.take();
+            let right = n.right.take();
+
+            n.left = invert(right);
+            n.right = invert(left);
+            drop(n);
+            Some(ref_node)
+        } else {
+            None
+        }
+    }
+    invert(root)
+}
+
+pub fn is_balanced(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
+    true
+}
