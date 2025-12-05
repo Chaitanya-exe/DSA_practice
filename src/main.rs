@@ -729,5 +729,43 @@ pub fn invert_tree(root: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<Tre
 }
 
 pub fn is_balanced(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
-    true
+
+    fn get_height(node: &Option<Rc<RefCell<TreeNode>>>) -> i32 {
+        match node {
+            None => 0,
+            Some(ref_cell) => {
+                let n = ref_cell.borrow();
+
+                let left_height = get_height(&n.left);
+                let right_height = get_height(&n.right);
+
+                1+left_height.max(right_height)
+            }
+        }
+    }
+
+
+    fn check_balance(node: &Option<Rc<RefCell<TreeNode>>>) -> bool {
+        match node {
+            None => true,
+            Some(ref_cell) => {
+                let n = ref_cell.borrow();
+
+                let left_height = get_height(&n.left);
+                let right_height = get_height(&n.right);
+
+                if (left_height-right_height).abs() > 1 {
+                    return false
+                }
+
+                return check_balance(&n.left) && check_balance(&n.right)
+            }
+        }
+    }
+    
+    if check_balance(&root) {
+        true
+    } else {
+        false
+    }
 }
