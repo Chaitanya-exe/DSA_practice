@@ -729,7 +729,6 @@ pub fn invert_tree(root: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<Tre
 }
 
 pub fn is_balanced(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
-
     fn get_height(node: &Option<Rc<RefCell<TreeNode>>>) -> i32 {
         match node {
             None => 0,
@@ -739,11 +738,10 @@ pub fn is_balanced(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
                 let left_height = get_height(&n.left);
                 let right_height = get_height(&n.right);
 
-                1+left_height.max(right_height)
+                1 + left_height.max(right_height)
             }
         }
     }
-
 
     fn check_balance(node: &Option<Rc<RefCell<TreeNode>>>) -> bool {
         match node {
@@ -754,18 +752,62 @@ pub fn is_balanced(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
                 let left_height = get_height(&n.left);
                 let right_height = get_height(&n.right);
 
-                if (left_height-right_height).abs() > 1 {
-                    return false
+                if (left_height - right_height).abs() > 1 {
+                    return false;
                 }
 
-                return check_balance(&n.left) && check_balance(&n.right)
+                return check_balance(&n.left) && check_balance(&n.right);
             }
         }
     }
-    
-    if check_balance(&root) {
-        true
-    } else {
-        false
+
+    if check_balance(&root) { true } else { false }
+}
+
+pub fn word_break(s: String, word_dict: Vec<String>) -> bool {
+    let n = s.len();
+    let mut dict = HashSet::new();
+    let mut dp = vec![false; n + 1];
+    word_dict.iter().for_each(|w| {
+        dict.insert(w);
+    });
+    dp[0] = true;
+
+    for i in 1..=n {
+        for j in 0..i {
+            if dp[j] {
+                let slice = &s[j..i];
+                if dict.contains(&slice.to_string()) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
     }
+
+    dp[n]
+}
+
+pub fn longest_common_prefix(strs: Vec<String>) -> String {
+    let mut prefix = strs[0].clone();
+
+    for word in &strs {
+        let word: Vec<char> = word.chars().collect();
+        let mut test = String::new();
+        let prefix_chars: Vec<char> = prefix.chars().collect();
+
+        for i in 0..word.len() {
+            if i >= word.len() || i >= prefix_chars.len() {
+                break;
+            }
+            if prefix_chars[i] == word[i] {
+                test.push(prefix_chars[i]);
+            } else {
+                break;
+            }
+        }
+        prefix = String::from(test);
+    }
+
+    prefix.to_string()
 }
