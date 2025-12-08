@@ -902,3 +902,34 @@ pub fn zigzag_level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> 
 
     res
 }
+
+pub fn right_side_view(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+    let mut res = Vec::new();
+    if root.is_none() { return res; } 
+
+    let mut q = VecDeque::new();
+    q.push_back(root.unwrap());
+
+    while !q.is_empty() {
+        let level_size = q.len();
+        let mut level_vals = Vec::new();
+
+        for _ in 0..level_size {
+            let node_rc = q.pop_front().unwrap();
+            let node = node_rc.borrow();
+
+            level_vals.push(node.val);
+
+            if let Some(left) = &node.left {
+                q.push_back(left.clone());
+            }
+            if let Some(right) = &node.right {
+                q.push_back(right.clone());
+            }
+        }
+
+        res.push(level_vals.pop().unwrap())
+    }
+
+    res
+}
