@@ -811,3 +811,28 @@ pub fn longest_common_prefix(strs: Vec<String>) -> String {
 
     prefix.to_string()
 }
+
+pub fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
+    let mut results: Vec<Vec<i32>> = Vec::new();
+    
+    fn order(node: &Option<Rc<RefCell<TreeNode>>>, level: usize, results: &mut Vec<Vec<i32>>){
+        if results.len() == level {
+            results.push(Vec::new());
+        }
+
+        match node {
+            None => {},
+            Some(ref_cell) => {
+                let n = ref_cell.borrow();
+
+                results[level].push(n.val);
+
+                order(&n.left, level+1, results); order(&n.right, level+1, results);
+            }
+        }
+    }
+
+    order(&root, 0, &mut results);
+
+    results
+}
