@@ -1,8 +1,7 @@
-use core::num;
-use std::array;
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
+use std::collections::VecDeque;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct TreeNode {
@@ -835,4 +834,71 @@ pub fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
     order(&root, 0, &mut results);
 
     results
+}
+
+pub fn bfs(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>>{
+    let mut res = Vec::new();
+    if root.is_none() { return res; }
+
+    let mut q = VecDeque::new();
+    q.push_back(root.unwrap());
+
+    while !q.is_empty() {
+        let level_size = q.len();
+        let mut level_vals = Vec::with_capacity(level_size);
+
+        for _ in 0..level_size {
+            let node_rc = q.pop_front().unwrap();
+            let node = node_rc.borrow();
+
+            level_vals.push(node.val);
+
+            if let Some(left) = &node.left {
+                q.push_back(left.clone());
+            }
+            if let Some(right) = &node.right {
+                q.push_back(right.clone());
+            }
+        }
+
+        res.push(level_vals)
+    }
+
+    res
+}
+
+pub fn zigzag_level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
+    let mut res = Vec::new();
+    if root.is_none() { return res; }
+
+    let mut q = VecDeque::new();
+    q.push_back(root.unwrap());
+
+    let mut left_to_right = true;
+    while !q.is_empty() {
+        let level_size = q.len();
+        let mut level_vals = VecDeque::with_capacity(level_size);
+        for _ in 0..level_size {
+            let node_rc = q.pop_front().unwrap();
+            let node = node_rc.borrow();
+
+            if left_to_right == true {
+                level_vals.push_back(node.val);
+            } else {
+                level_vals.push_front(node.val);
+            }
+
+            if let Some(left) = &node.left {
+                q.push_back(left.clone());
+            }
+            if let Some(right) = &node.right {
+                q.push_back(right.clone());
+            }
+        }
+
+        res.push(level_vals.into_iter().collect::<Vec<i32>>());
+        left_to_right = !left_to_right;
+    }
+
+    res
 }
