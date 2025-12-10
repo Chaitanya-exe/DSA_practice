@@ -1,7 +1,7 @@
 use std::cell::RefCell;
+use std::collections::VecDeque;
 use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
-use std::collections::VecDeque;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct TreeNode {
@@ -21,7 +21,7 @@ impl TreeNode {
     }
 }
 
-fn main() {
+pub fn main() {
     let mut tree: Vec<Vec<i32>> = vec![vec![]; 10];
     add_edge(&mut tree, 0, 1);
     add_edge(&mut tree, 0, 2);
@@ -36,7 +36,7 @@ fn main() {
     println!("Max depth: {}", depth);
 }
 
-fn count_painters(boards: &Vec<i32>, mid: &i32) -> i32 {
+pub fn count_painters(boards: &Vec<i32>, mid: &i32) -> i32 {
     let mut time_taken: i32 = 0;
     let mut painters = 1;
     for board in boards {
@@ -51,7 +51,7 @@ fn count_painters(boards: &Vec<i32>, mid: &i32) -> i32 {
 }
 
 // Painter's problem. Given an array of boards and k painters allocate the boards to painter in such a way that all boards are painted in the minimum time.
-fn painter_problem(boards: Vec<i32>, painters: i32) -> i32 {
+pub fn painter_problem(boards: Vec<i32>, painters: i32) -> i32 {
     let (mut low, mut high): (i32, i32) = (*boards.iter().max().unwrap(), boards.iter().sum());
 
     while low < high {
@@ -67,7 +67,7 @@ fn painter_problem(boards: Vec<i32>, painters: i32) -> i32 {
     low as i32
 }
 
-fn count_students(books: &Vec<i32>, mid: &i32) -> i32 {
+pub fn count_students(books: &Vec<i32>, mid: &i32) -> i32 {
     let mut pages_alloc = 0;
     let mut students = 1;
     for book in books {
@@ -82,7 +82,7 @@ fn count_students(books: &Vec<i32>, mid: &i32) -> i32 {
 }
 
 // Book allocation problem
-fn book_allocation(books: Vec<i32>, m: i32) -> i32 {
+pub fn book_allocation(books: Vec<i32>, m: i32) -> i32 {
     let (mut low, mut high): (i32, i32) = (*books.iter().max().unwrap(), books.iter().sum::<i32>());
     let mut result = high;
     println!("low: {}\nhigh: {}", low, high);
@@ -102,9 +102,7 @@ fn book_allocation(books: Vec<i32>, m: i32) -> i32 {
     result as i32
 }
 
-fn occurence_in_sorted_array(nums: Vec<i32>, target: i32) -> i32 {
-    let mut result = 0;
-
+pub fn occurence_in_sorted_array(nums: Vec<i32>, target: i32) -> i32 {
     fn lower_bound(nums: &Vec<i32>, target: i32) -> i32 {
         let (mut l, mut r) = (0, nums.len());
 
@@ -143,7 +141,7 @@ fn occurence_in_sorted_array(nums: Vec<i32>, target: i32) -> i32 {
     count
 }
 
-fn floor_and_ceiling(nums: Vec<i32>, target: i32) -> (i32, i32) {
+pub fn floor_and_ceiling(nums: Vec<i32>, target: i32) -> (i32, i32) {
     let (mut floor, mut ceiling) = (0, 0);
     let (mut l, mut r) = (0, nums.len() - 1);
     let mut x = 0;
@@ -163,7 +161,7 @@ fn floor_and_ceiling(nums: Vec<i32>, target: i32) -> (i32, i32) {
     (floor, ceiling)
 }
 
-fn lower_bound_binary_search(nums: Vec<i32>, target: i32) -> i32 {
+pub fn lower_bound_binary_search(nums: Vec<i32>, target: i32) -> i32 {
     let (mut l, mut r) = (0, nums.len());
 
     while l < r {
@@ -178,7 +176,7 @@ fn lower_bound_binary_search(nums: Vec<i32>, target: i32) -> i32 {
     l as i32
 }
 
-fn upper_bound_binary_search(nums: Vec<i32>, target: i32) -> i32 {
+pub fn upper_bound_binary_search(nums: Vec<i32>, target: i32) -> i32 {
     let (mut l, mut r) = (0, nums.len());
 
     while l < r {
@@ -193,8 +191,7 @@ fn upper_bound_binary_search(nums: Vec<i32>, target: i32) -> i32 {
     r as i32
 }
 
-fn longest_balanced_substring(s: String) -> i32 {
-    let binary = vec!['0', '1'];
+pub fn longest_balanced_substring(s: String) -> i32 {
     let mut count: i32 = 0;
     let mut length = 0;
     let mut prefix_sum = HashMap::new();
@@ -218,7 +215,7 @@ fn longest_balanced_substring(s: String) -> i32 {
     return length as i32;
 }
 
-fn eat_bananas(piles: Vec<i32>, h: i32) -> i32 {
+pub fn eat_bananas(piles: Vec<i32>, h: i32) -> i32 {
     let mut min = 1;
     let mut max = *piles.iter().max().unwrap();
     let mut min_energy = (max * max) * h;
@@ -226,14 +223,13 @@ fn eat_bananas(piles: Vec<i32>, h: i32) -> i32 {
     while min < max {
         let mid = (min + max) / 2;
         let mut total_hrs = 0;
-        let mut energy = 0;
 
         for pile in &piles {
             total_hrs += (pile + mid - 1) / mid;
         }
 
         if total_hrs <= h {
-            energy = (mid * mid) * total_hrs;
+            let energy = (mid * mid) * total_hrs;
             min_energy = min_energy.min(energy);
             max = mid;
         } else {
@@ -255,7 +251,7 @@ fn eat_bananas(piles: Vec<i32>, h: i32) -> i32 {
 
 // Must run in O(n)
 
-fn distinct_characters(s: String) -> i32 {
+pub fn distinct_characters(s: String) -> i32 {
     let mut frequency = HashMap::new();
     let mut low: usize = 0;
     let chars: Vec<char> = s.chars().collect();
@@ -288,7 +284,7 @@ fn distinct_characters(s: String) -> i32 {
 // Use prefix sum and a hashmap to track prefix frequencies.
 // Avoid nested loops (O(n²) TLE)
 
-// fn subarry_with_distinct_sum(nums: Vec<i32>, k: i32) -> i32 {
+// pub fn subarry_with_distinct_sum(nums: Vec<i32>, k: i32) -> i32 {
 //     let mut prefix_sum = HashMap::new();
 //     let mut sum = nums[0];
 //     let mut cont_arrays = 0
@@ -312,7 +308,7 @@ fn distinct_characters(s: String) -> i32 {
 // |u - v| <= t
 // Return all such pairs. If there are multiple matches for a u, return all.
 
-fn two_array_modulus(nums1: Vec<i32>, nums2: Vec<i32>, t: i32) -> Vec<(i32, i32)> {
+pub fn two_array_modulus(nums1: Vec<i32>, nums2: Vec<i32>, t: i32) -> Vec<(i32, i32)> {
     let mut p1 = 0;
     let mut p2 = 0;
     let mut pairs: Vec<(i32, i32)> = Vec::new();
@@ -339,7 +335,7 @@ fn two_array_modulus(nums1: Vec<i32>, nums2: Vec<i32>, t: i32) -> Vec<(i32, i32)
 // Step 2: Find the max value in the map.
 // Step 3: Return all chars with that frequency.
 
-fn character_frequency(s: String) -> (char, i32) {
+pub fn character_frequency(s: String) -> (char, i32) {
     let mut frequency = HashMap::new();
     let mut max_freq = 0;
     let mut max_char = 'a';
@@ -366,8 +362,7 @@ fn character_frequency(s: String) -> (char, i32) {
 
 // If at the end all frequencies are zero and no extra characters, it's an anagram.
 
-fn check_anagram(s: String, t: String) -> bool {
-    let mut result = false;
+pub fn check_anagram(s: String, t: String) -> bool {
     let mut freq1 = HashMap::new();
     let mut freq2 = HashMap::new();
 
@@ -388,18 +383,13 @@ fn check_anagram(s: String, t: String) -> bool {
         }
     }
 
-    if freq1 == freq2 {
-        result = true
-    } else {
-        result = false
-    }
-    return result;
+    if freq1 == freq2 { true } else { false }
 }
 
 // Given an integer array nums and an integer k,
 // return the total number of continuous subarrays whose sum equals to k.
 
-fn subarray_sum(nums: Vec<i32>, k: i32) -> i32 {
+pub fn subarray_sum(nums: Vec<i32>, k: i32) -> i32 {
     let mut prefix_sum = HashMap::new();
     let mut sum: i32 = 0;
     let mut count = 0;
@@ -420,7 +410,7 @@ fn subarray_sum(nums: Vec<i32>, k: i32) -> i32 {
 
 // Longest Subarray with sum <= k
 // Find the longest subarrray whose sum is less than or equal to a given 'k'
-fn longest_subarray_k(nums: Vec<i32>, k: i32) -> i32 {
+pub fn longest_subarray_k(nums: Vec<i32>, k: i32) -> i32 {
     let mut left: usize = 0;
     let (mut sum, mut max_len) = (0, 0);
 
@@ -441,7 +431,7 @@ fn longest_subarray_k(nums: Vec<i32>, k: i32) -> i32 {
 }
 
 // Given an array containing both positive and negative integers, we have to find the length of the longest subarray with the sum of all elements equal to zero.
-fn longet_subarray_sum_zero(nums: Vec<i32>) -> i32 {
+pub fn longet_subarray_sum_zero(nums: Vec<i32>) -> i32 {
     let mut prefix_sum = 0;
     let mut seen = HashMap::new();
     let mut max_len = 0;
@@ -464,7 +454,7 @@ fn longet_subarray_sum_zero(nums: Vec<i32>) -> i32 {
 }
 
 //  Given an array of integers A and an integer B. Find the total number of subarrays having bitwise XOR of all elements equal to k.
-fn xor_subarray(nums: Vec<i32>, target: i32) -> i32 {
+pub fn xor_subarray(nums: Vec<i32>, target: i32) -> i32 {
     let mut prefix_xor = 0;
     let mut seen = HashMap::new();
     let mut count = 0;
@@ -486,7 +476,7 @@ fn xor_subarray(nums: Vec<i32>, target: i32) -> i32 {
     count
 }
 
-fn find_reapeated_missing(nums: Vec<i32>) -> (i32, i32) {
+pub fn find_reapeated_missing(nums: Vec<i32>) -> (i32, i32) {
     let mut results = (0, 0);
     let mut array_sum = 0;
     let n = nums.len() as i32;
@@ -813,20 +803,21 @@ pub fn longest_common_prefix(strs: Vec<String>) -> String {
 
 pub fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
     let mut results: Vec<Vec<i32>> = Vec::new();
-    
-    fn order(node: &Option<Rc<RefCell<TreeNode>>>, level: usize, results: &mut Vec<Vec<i32>>){
+
+    fn order(node: &Option<Rc<RefCell<TreeNode>>>, level: usize, results: &mut Vec<Vec<i32>>) {
         if results.len() == level {
             results.push(Vec::new());
         }
 
         match node {
-            None => {},
+            None => {}
             Some(ref_cell) => {
                 let n = ref_cell.borrow();
 
                 results[level].push(n.val);
 
-                order(&n.left, level+1, results); order(&n.right, level+1, results);
+                order(&n.left, level + 1, results);
+                order(&n.right, level + 1, results);
             }
         }
     }
@@ -836,9 +827,11 @@ pub fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
     results
 }
 
-pub fn bfs(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>>{
+pub fn bfs(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
     let mut res = Vec::new();
-    if root.is_none() { return res; }
+    if root.is_none() {
+        return res;
+    }
 
     let mut q = VecDeque::new();
     q.push_back(root.unwrap());
@@ -869,7 +862,9 @@ pub fn bfs(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>>{
 
 pub fn zigzag_level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
     let mut res = Vec::new();
-    if root.is_none() { return res; }
+    if root.is_none() {
+        return res;
+    }
 
     let mut q = VecDeque::new();
     q.push_back(root.unwrap());
@@ -905,7 +900,9 @@ pub fn zigzag_level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> 
 
 pub fn right_side_view(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
     let mut res = Vec::new();
-    if root.is_none() { return res; } 
+    if root.is_none() {
+        return res;
+    }
 
     let mut q = VecDeque::new();
     q.push_back(root.unwrap());
@@ -932,4 +929,69 @@ pub fn right_side_view(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
     }
 
     res
+}
+
+pub fn is_subtree(
+    root: Option<Rc<RefCell<TreeNode>>>,
+    sub_root: Option<Rc<RefCell<TreeNode>>>,
+) -> bool {
+
+    fn compare_subtree(node1: &Option<Rc<RefCell<TreeNode>>>, node2: &Option<Rc<RefCell<TreeNode>>>) -> bool {
+        match (node1, node2) {
+            (None, None) => true,
+            (Some(n1), Some(n2)) => {
+                let n1 = n1.borrow(); let n2 = n2.borrow();
+                
+                if n1.val == n2.val {
+                    if compare_subtree(&n1.left, &n2.left) && compare_subtree(&n1.right, &n2.right) {
+                        true
+                    } else {
+                        false
+                    }
+                } else {
+                    false
+                }
+            },
+            _ => false
+        }
+    }
+
+    fn bfs(root: &Option<Rc<RefCell<TreeNode>>>, sub_root: &Option<Rc<RefCell<TreeNode>>>) -> bool {
+        let mut res = false;
+        if root.is_none() && sub_root.is_none() {
+            return false;
+        }
+        let sub_root_value = sub_root.clone().unwrap().borrow().val;
+
+        let mut q = VecDeque::new();
+        q.push_back(root.clone().unwrap());
+
+        while !q.is_empty() {
+            let level_size = q.len();
+
+
+            for _ in 0..level_size {
+                let node_rc = q.pop_front().unwrap();
+                let node = node_rc.borrow();
+
+                if node.val == sub_root_value {
+                    if compare_subtree(&Some(node_rc.clone()), &sub_root) {
+                        res = true;
+                        break;
+                    }
+                }
+
+                if let Some(left) = &node.left {
+                    q.push_back(left.clone());
+                }
+                if let Some(right) = &node.right {
+                    q.push_back(right.clone());
+                }
+            }
+
+        }
+        res
+    }
+
+    bfs(&root, &sub_root)
 }
