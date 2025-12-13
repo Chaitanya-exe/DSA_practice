@@ -1,6 +1,7 @@
 use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::collections::{HashMap, HashSet};
+use std::i32;
 use std::rc::Rc;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -994,4 +995,29 @@ pub fn is_subtree(
     }
 
     bfs(&root, &sub_root)
+}
+
+pub fn good_nodes(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    let mut results = 0;
+    let max_el = i32::MIN;
+    fn count_nodes(node: &Option<Rc<RefCell<TreeNode>>>, results: &mut i32, mut max_el: i32) {
+        match node {
+            Some(ref_cell) => {
+                let n = ref_cell.borrow();    
+                max_el = if n.val > max_el {
+                    *results += 1;
+                    n.val
+                } else {
+                    max_el
+                };
+                println!("{}",max_el);
+                count_nodes(&n.left, results, max_el);
+                count_nodes(&n.right, results, max_el);
+            },
+            None => {}
+        }
+    }        
+    count_nodes(&root, &mut results, max_el);
+    println!("{}", max_el);
+    results
 }
