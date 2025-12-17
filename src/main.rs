@@ -1023,39 +1023,23 @@ pub fn good_nodes(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
 }
 
 pub fn diameter_of_binary_tree(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
-    fn deepest_path(node: &Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    let mut diameter = i32::MIN;
+
+    fn find_diameter(node: &Option<Rc<RefCell<TreeNode>>>, diameter: &mut i32) -> i32{
         match node {
             None => 0,
             Some(cell) => {
                 let n = cell.borrow();
-                let left_sub = deepest_path(&n.left);
-                let right_sub = deepest_path(&n.right);
 
-                1 + left_sub.max(right_sub)
+                let left_depth = find_diameter(&n.left, diameter);
+                let right_depth = find_diameter(&n.right, diameter);
+
+                *diameter = (*diameter).max(left_depth + right_depth);
+
+                1 + left_depth.max(right_depth)
             }
         }
     }
-
-
-    let mut diameter = i32::MIN;
-    fn find_diameter(node: &Option<Rc<RefCell<TreeNode>>>, diameter: &mut i32) {
-        match node {
-            None => {},
-            Some(cell) => {
-                let n = cell.borrow();
-
-                let left_depth = deepest_path(&n.left);
-                let right_depth = deepest_path(&n.right);
-                let mut temp = left_depth + right_depth;
-                *diameter = *diameter.max(&mut temp);
-                
-                find_diameter(&n.left, diameter);
-                find_diameter(&n.right, diameter);
-                
-            }
-        }
-    }
-
     find_diameter(&root, &mut diameter);
     diameter
 }
