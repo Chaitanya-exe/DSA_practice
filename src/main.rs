@@ -1031,7 +1031,7 @@ pub fn diameter_of_binary_tree(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
                 let left_sub = deepest_path(&n.left);
                 let right_sub = deepest_path(&n.right);
 
-                1 + left_sub + right_sub
+                1 + left_sub.max(right_sub)
             }
         }
     }
@@ -1043,8 +1043,19 @@ pub fn diameter_of_binary_tree(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
             None => {},
             Some(cell) => {
                 let n = cell.borrow();
+
+                let left_depth = deepest_path(&n.left);
+                let right_depth = deepest_path(&n.right);
+                let mut temp = left_depth + right_depth;
+                *diameter = *diameter.max(&mut temp);
+                
+                find_diameter(&n.left, diameter);
+                find_diameter(&n.right, diameter);
                 
             }
         }
     }
+
+    find_diameter(&root, &mut diameter);
+    diameter
 }
