@@ -1043,3 +1043,28 @@ pub fn diameter_of_binary_tree(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     find_diameter(&root, &mut diameter);
     diameter
 }
+
+pub fn max_path_sum(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+   
+    let mut max_path_sum = i32::MIN;
+
+   fn traverse_path(node: &Option<Rc<RefCell<TreeNode>>>, max_path_sum: &mut i32) -> i32{
+        match node {
+            None => 0,
+            Some(cell) => {
+                let n = cell.borrow();
+
+                let val = n.val.clone();
+                let left_val = traverse_path(&n.left, max_path_sum).max(0);
+                let right_val = traverse_path(&n.right, max_path_sum).max(0);
+
+                let price = val + left_val + right_val;
+                *max_path_sum = (*max_path_sum).max(price);
+
+                val + left_val.max(right_val)
+            }
+        }
+    }
+    traverse_path(&root, &mut max_path_sum);
+    max_path_sum     
+}
