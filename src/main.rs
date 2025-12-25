@@ -1068,3 +1068,56 @@ pub fn max_path_sum(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     traverse_path(&root, &mut max_path_sum);
     max_path_sum     
 }
+
+
+struct Codec;
+
+impl Codec {
+    pub fn new() -> Self {
+        Codec
+    }
+
+    pub fn serialize(&self, root: Option<Rc<RefCell<TreeNode>>>) -> String {
+        let mut data = Vec::new();
+        
+        fn dfs_serialize(node: &Option<Rc<RefCell<TreeNode>>>, data: &mut Vec<String>) {
+            match node {
+                None => {
+                    data.push("#".to_string());
+                },
+                Some(cell) => {
+                    let n = cell.borrow();
+                    let val = n.val.clone();
+                    data.push(val.to_string());
+                    dfs_serialize(&n.left, data);
+                    dfs_serialize(&n.right, data);
+                }
+            }
+        }
+        dfs_serialize(&root, &mut data);
+        data.join(",")
+    }
+
+    pub fn deserialize(&self, data: String) -> Option<Rc<RefCell<TreeNode>>> {
+        let data = data.split(",").collect();
+        let mut idx = 0;
+        fn dfs_deserialize(idx: &mut usize, data: &Vec<&str>) -> Option<Rc<RefCell<TreeNode>>>{
+            let token = data[*idx];
+            *idx += 1;
+
+            match token {
+                "#" => None,
+                _ => {
+                    let mut node = TreeNode::new(token.parse::<i32>().unwrap());
+                    
+                    node.left = dfs_deserialize(idx, data);
+                    node.right = dfs_deserialize(idx, data);
+
+                    Some(Rc::new(RefCell::new(node))) 
+                },
+            }
+        }
+
+        dfs_deserialize(&mut idx, &data)
+    }
+}
