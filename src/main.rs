@@ -1070,7 +1070,7 @@ pub fn max_path_sum(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
 }
 
 
-struct Codec;
+pub struct Codec;
 
 impl Codec {
     pub fn new() -> Self {
@@ -1120,4 +1120,28 @@ impl Codec {
 
         dfs_deserialize(&mut idx, &data)
     }
+}
+
+
+pub fn collect_leaves(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
+    let mut results = vec![];
+    fn collect(node: &Option<Rc<RefCell<TreeNode>>>, results: &mut Vec<Vec<i32>>) -> i32 {
+        match node {
+            None => -1,
+            Some(cell) => {
+                let n = cell.borrow();
+                let left_height = collect(&n.left, results);
+                let righ_height = collect(&n.right, results);
+                let height = left_height.max(righ_height) as usize;
+                
+                if results.len() == height {
+                    results.push(vec![]);
+                }
+                results.get_mut(height).unwrap().push(n.val);
+                1 + left_height.max(righ_height)
+            }
+        }
+    }
+    collect(&root, &mut results);
+    results
 }
