@@ -2,6 +2,7 @@ use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::collections::{HashMap, HashSet};
 use std::i32;
+use std::ops::Index;
 use std::rc::Rc;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -1144,4 +1145,40 @@ pub fn collect_leaves(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
     }
     collect(&root, &mut results);
     results
+}
+
+pub fn build_tree(preorder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
+    
+    let mut inorder_indices = HashMap::new();
+
+    for (i, &val) in inorder.iter().enumerate() {
+        inorder_indices.insert(val, i);
+    }
+
+    let mut idx: usize = 0;
+
+    fn construct(
+        preorder: &Vec<i32>,
+        inorder_indices: &HashMap<i32, usize>,
+        idx: &mut usize,
+        in_left: usize,
+        in_right: usize
+    ) -> Option<Rc<RefCell<TreeNode>>> {
+        if in_left >= in_right {
+            return None
+        }
+
+        let root_val = preorder[*idx];
+        *idx += 1;
+
+        let mut node = TreeNode::new(root_val);
+        let root_index = inorder_indices[&root_val];
+
+        node.left = construct(preorder, inorder_indices, idx, in_left, root_index);
+        node.right = construct(preorder, inorder_indices, idx, root_index+1, in_right);
+
+        Some(Rc::new(RefCell::new(node)))
+    } 
+
+    construct(&preorder, &inorder_indices, &mut idx, 0, preorder.len())
 }
