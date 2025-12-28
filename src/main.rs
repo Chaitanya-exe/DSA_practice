@@ -1182,3 +1182,18 @@ pub fn build_tree(preorder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<Tr
 
     construct(&preorder, &inorder_indices, &mut idx, 0, preorder.len())
 }
+
+pub fn is_valid_bst(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
+    fn validate(node: &Option<Rc<RefCell<TreeNode>>>, check: &mut bool) -> bool {
+        match node {
+            None => true,
+            Some(cell) => {
+                let n = cell.borrow();
+                let mut bst_check = false;
+                let left_val = validate(&n.left, &mut bst_check);
+                let right_val = validate(&n.right, &mut bst_check);
+                
+            }
+        }
+    }        
+}
