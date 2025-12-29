@@ -1184,16 +1184,42 @@ pub fn build_tree(preorder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<Tr
 }
 
 pub fn is_valid_bst(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
-    fn validate(node: &Option<Rc<RefCell<TreeNode>>>, check: &mut bool) -> bool {
+    fn validate(node: &Option<Rc<RefCell<TreeNode>>>, min: Option<i32>, max: Option<i32>) -> bool {
         match node {
-            None => true,
+            None => true, 
             Some(cell) => {
                 let n = cell.borrow();
-                let mut bst_check = false;
-                let left_val = validate(&n.left, &mut bst_check);
-                let right_val = validate(&n.right, &mut bst_check);
-                
+                let val = n.val;
+                if min.map_or(false, |m| val <= m) {
+                    return false;
+                } 
+                if max.map_or(false, |m| val >= m) {
+                    return false;
+                }
+
+                return validate(&n.left, min, Some(val)) && validate(&n.right, Some(val), max);
+
             }
         }
-    }        
+    } 
+
+    validate(&root, None, None)       
+}
+
+pub fn inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+    let mut order: Vec<i32> = vec![];        
+
+    fn traverse(node: &Option<Rc<RefCell<TreeNode>>>, order: &mut Vec<i32>) {
+        match node {
+            None => {},
+            Some(cell) => {
+                let n = cell.borrow();
+                traverse(&n.left, order);
+                order.push(n.val);
+                traverse(&n.right, order);
+            }
+        }
+    }
+    traverse(&root, &mut order);
+    order
 }
