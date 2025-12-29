@@ -937,15 +937,19 @@ pub fn is_subtree(
     root: Option<Rc<RefCell<TreeNode>>>,
     sub_root: Option<Rc<RefCell<TreeNode>>>,
 ) -> bool {
-
-    fn compare_subtree(node1: &Option<Rc<RefCell<TreeNode>>>, node2: &Option<Rc<RefCell<TreeNode>>>) -> bool {
+    fn compare_subtree(
+        node1: &Option<Rc<RefCell<TreeNode>>>,
+        node2: &Option<Rc<RefCell<TreeNode>>>,
+    ) -> bool {
         match (node1, node2) {
             (None, None) => true,
             (Some(n1), Some(n2)) => {
-                let n1 = n1.borrow(); let n2 = n2.borrow();
-                
+                let n1 = n1.borrow();
+                let n2 = n2.borrow();
+
                 if n1.val == n2.val {
-                    if compare_subtree(&n1.left, &n2.left) && compare_subtree(&n1.right, &n2.right) {
+                    if compare_subtree(&n1.left, &n2.left) && compare_subtree(&n1.right, &n2.right)
+                    {
                         true
                     } else {
                         false
@@ -953,8 +957,8 @@ pub fn is_subtree(
                 } else {
                     false
                 }
-            },
-            _ => false
+            }
+            _ => false,
         }
     }
 
@@ -970,7 +974,6 @@ pub fn is_subtree(
 
         while !q.is_empty() {
             let level_size = q.len();
-
 
             for _ in 0..level_size {
                 let node_rc = q.pop_front().unwrap();
@@ -990,7 +993,6 @@ pub fn is_subtree(
                     q.push_back(right.clone());
                 }
             }
-
         }
         res
     }
@@ -1004,20 +1006,20 @@ pub fn good_nodes(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     fn count_nodes(node: &Option<Rc<RefCell<TreeNode>>>, results: &mut i32, mut max_el: i32) {
         match node {
             Some(ref_cell) => {
-                let n = ref_cell.borrow();    
+                let n = ref_cell.borrow();
                 max_el = if n.val > max_el {
                     *results += 1;
                     n.val
                 } else {
                     max_el
                 };
-                println!("{}",max_el);
+                println!("{}", max_el);
                 count_nodes(&n.left, results, max_el);
                 count_nodes(&n.right, results, max_el);
-            },
+            }
             None => {}
         }
-    }        
+    }
     count_nodes(&root, &mut results, max_el);
     println!("{}", max_el);
     results
@@ -1026,7 +1028,7 @@ pub fn good_nodes(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
 pub fn diameter_of_binary_tree(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     let mut diameter = i32::MIN;
 
-    fn find_diameter(node: &Option<Rc<RefCell<TreeNode>>>, diameter: &mut i32) -> i32{
+    fn find_diameter(node: &Option<Rc<RefCell<TreeNode>>>, diameter: &mut i32) -> i32 {
         match node {
             None => 0,
             Some(cell) => {
@@ -1046,10 +1048,9 @@ pub fn diameter_of_binary_tree(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
 }
 
 pub fn max_path_sum(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
-   
     let mut max_path_sum = i32::MIN;
 
-   fn traverse_path(node: &Option<Rc<RefCell<TreeNode>>>, max_path_sum: &mut i32) -> i32{
+    fn traverse_path(node: &Option<Rc<RefCell<TreeNode>>>, max_path_sum: &mut i32) -> i32 {
         match node {
             None => 0,
             Some(cell) => {
@@ -1067,9 +1068,8 @@ pub fn max_path_sum(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
         }
     }
     traverse_path(&root, &mut max_path_sum);
-    max_path_sum     
+    max_path_sum
 }
-
 
 pub struct Codec;
 
@@ -1080,12 +1080,12 @@ impl Codec {
 
     pub fn serialize(&self, root: Option<Rc<RefCell<TreeNode>>>) -> String {
         let mut data = Vec::new();
-        
+
         fn dfs_serialize(node: &Option<Rc<RefCell<TreeNode>>>, data: &mut Vec<String>) {
             match node {
                 None => {
                     data.push("#".to_string());
-                },
+                }
                 Some(cell) => {
                     let n = cell.borrow();
                     let val = n.val.clone();
@@ -1102,7 +1102,7 @@ impl Codec {
     pub fn deserialize(&self, data: String) -> Option<Rc<RefCell<TreeNode>>> {
         let data = data.split(",").collect();
         let mut idx = 0;
-        fn dfs_deserialize(idx: &mut usize, data: &Vec<&str>) -> Option<Rc<RefCell<TreeNode>>>{
+        fn dfs_deserialize(idx: &mut usize, data: &Vec<&str>) -> Option<Rc<RefCell<TreeNode>>> {
             let token = data[*idx];
             *idx += 1;
 
@@ -1110,19 +1110,18 @@ impl Codec {
                 "#" => None,
                 _ => {
                     let mut node = TreeNode::new(token.parse::<i32>().unwrap());
-                    
+
                     node.left = dfs_deserialize(idx, data);
                     node.right = dfs_deserialize(idx, data);
 
-                    Some(Rc::new(RefCell::new(node))) 
-                },
+                    Some(Rc::new(RefCell::new(node)))
+                }
             }
         }
 
         dfs_deserialize(&mut idx, &data)
     }
 }
-
 
 pub fn collect_leaves(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
     let mut results = vec![];
@@ -1134,7 +1133,7 @@ pub fn collect_leaves(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
                 let left_height = collect(&n.left, results);
                 let righ_height = collect(&n.right, results);
                 let height = left_height.max(righ_height) as usize;
-                
+
                 if results.len() == height {
                     results.push(vec![]);
                 }
@@ -1148,7 +1147,6 @@ pub fn collect_leaves(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
 }
 
 pub fn build_tree(preorder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
-    
     let mut inorder_indices = HashMap::new();
 
     for (i, &val) in inorder.iter().enumerate() {
@@ -1162,10 +1160,10 @@ pub fn build_tree(preorder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<Tr
         inorder_indices: &HashMap<i32, usize>,
         idx: &mut usize,
         in_left: usize,
-        in_right: usize
+        in_right: usize,
     ) -> Option<Rc<RefCell<TreeNode>>> {
         if in_left >= in_right {
-            return None
+            return None;
         }
 
         let root_val = preorder[*idx];
@@ -1175,10 +1173,10 @@ pub fn build_tree(preorder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<Tr
         let root_index = inorder_indices[&root_val];
 
         node.left = construct(preorder, inorder_indices, idx, in_left, root_index);
-        node.right = construct(preorder, inorder_indices, idx, root_index+1, in_right);
+        node.right = construct(preorder, inorder_indices, idx, root_index + 1, in_right);
 
         Some(Rc::new(RefCell::new(node)))
-    } 
+    }
 
     construct(&preorder, &inorder_indices, &mut idx, 0, preorder.len())
 }
@@ -1186,32 +1184,31 @@ pub fn build_tree(preorder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<Tr
 pub fn is_valid_bst(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
     fn validate(node: &Option<Rc<RefCell<TreeNode>>>, min: Option<i32>, max: Option<i32>) -> bool {
         match node {
-            None => true, 
+            None => true,
             Some(cell) => {
                 let n = cell.borrow();
                 let val = n.val;
                 if min.map_or(false, |m| val <= m) {
                     return false;
-                } 
+                }
                 if max.map_or(false, |m| val >= m) {
                     return false;
                 }
 
                 return validate(&n.left, min, Some(val)) && validate(&n.right, Some(val), max);
-
             }
         }
-    } 
+    }
 
-    validate(&root, None, None)       
+    validate(&root, None, None)
 }
 
 pub fn inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
-    let mut order: Vec<i32> = vec![];        
+    let mut order: Vec<i32> = vec![];
 
     fn traverse(node: &Option<Rc<RefCell<TreeNode>>>, order: &mut Vec<i32>) {
         match node {
-            None => {},
+            None => {}
             Some(cell) => {
                 let n = cell.borrow();
                 traverse(&n.left, order);
@@ -1222,4 +1219,30 @@ pub fn inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
     }
     traverse(&root, &mut order);
     order
+}
+
+pub fn find_second_minimum_value(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    let mut order = Vec::new();
+    let mut min = i32::MIN;
+    fn traverse(node: &Option<Rc<RefCell<TreeNode>>>, order: &mut Vec<i32>, min: &mut i32) {
+        match node {
+            None => {}
+            Some(cell) => {
+                let n = cell.borrow();
+                traverse(&n.right, order, min);
+                if n.val > *min && order.len() <= 2 {
+                    order.push(n.val);
+                    println!("{}", n.val);
+                    *min = (*min).min(n.val);
+                }
+                traverse(&n.right, order, min);
+            }
+        }
+    }
+    traverse(&root, &mut order, &mut min);
+    if order.len() < 2 {
+        return -1;
+    } else {
+        return *order.iter().max().unwrap();
+    }
 }
