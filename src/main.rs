@@ -1246,3 +1246,21 @@ pub fn find_second_minimum_value(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
         return *order.iter().max().unwrap();
     }
 }
+
+pub fn lowest_common_ancestor(root: Option<Rc<RefCell<TreeNode>>>, p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
+    let p_val = p.unwrap().borrow().val;
+    let q_val = q.unwrap().borrow().val;
+    let mut root = root.clone();
+    while let Some(cell) = root.clone() {
+        let val = cell.borrow().val;
+
+        if p_val < val && q_val < val {
+            root = cell.borrow().left.clone();
+        } else if p_val > val && q_val > val {
+            root = cell.borrow().right.clone();
+        } else {
+            return Some(cell);
+        }
+    }
+    None
+}
