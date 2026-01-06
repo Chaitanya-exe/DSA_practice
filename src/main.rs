@@ -2,7 +2,6 @@ use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::collections::{HashMap, HashSet};
 use std::i32;
-use std::ops::Index;
 use std::rc::Rc;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -1304,4 +1303,60 @@ pub fn max_level_sum(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     }
 
     answer_level as i32
+}
+
+
+pub struct Trie{
+    children: HashMap<char, Trie>,
+    is_end_of_word: bool
+}
+
+impl Trie {
+
+    fn new() -> Self {
+        Trie{
+            children: HashMap::new(),
+            is_end_of_word: false
+        }
+    }
+    
+    fn insert(&mut self, word: String) {
+        let mut current = self;
+
+        for ch in word.chars() {
+            current = current.children.entry(ch).or_insert_with(|| Trie::new());
+        }
+        current.is_end_of_word = true;
+    }
+    
+    fn search(&self, word: String) -> bool {
+        let mut result = false;
+        let mut current = self;
+        for ch in word.chars() {
+            if let Some(trie) = current.children.get(&ch){
+                current = trie;
+            } else {
+                result = false;
+                break;
+            }
+
+        }
+        if current.is_end_of_word {
+            result = true;
+        }
+
+        result
+    }
+    
+    fn starts_with(&self, prefix: String) -> bool {
+        let mut current = self;
+
+        for ch in prefix.chars() {
+            match current.children.get(&ch) {
+                Some(trie) => current = trie,
+                None => return false
+            }
+        }
+        true
+    }
 }
