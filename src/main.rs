@@ -1247,7 +1247,11 @@ pub fn find_second_minimum_value(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     }
 }
 
-pub fn lowest_common_ancestor(root: Option<Rc<RefCell<TreeNode>>>, p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
+pub fn lowest_common_ancestor(
+    root: Option<Rc<RefCell<TreeNode>>>,
+    p: Option<Rc<RefCell<TreeNode>>>,
+    q: Option<Rc<RefCell<TreeNode>>>,
+) -> Option<Rc<RefCell<TreeNode>>> {
     let p_val = p.unwrap().borrow().val;
     let q_val = q.unwrap().borrow().val;
     let mut root = root.clone();
@@ -1263,4 +1267,41 @@ pub fn lowest_common_ancestor(root: Option<Rc<RefCell<TreeNode>>>, p: Option<Rc<
         }
     }
     None
+}
+
+pub fn max_level_sum(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    let mut q = VecDeque::new();
+    let mut max_level_sum = i32::MIN;
+    let mut answer_level = 1;
+    let mut current_level = 1;
+    q.push_back(root.clone().unwrap());
+
+    while !q.is_empty() {
+        let level_size = q.len();
+        let mut level_sum = 0;
+
+        for _ in 0..level_size {
+            let n = q.pop_front();
+            if let Some(cell) = &n {
+                let node = cell.borrow();
+                level_sum += node.val;
+
+                if !node.left.is_none() {
+                    q.push_back(node.left.clone().unwrap());
+                }
+
+                if !node.right.is_none() {
+                    q.push_back(node.right.clone().unwrap());
+                }
+            }
+        }
+        if level_sum > max_level_sum {
+            max_level_sum = level_sum;
+            answer_level = current_level;
+        }
+
+        current_level += 1;
+    }
+
+    answer_level as i32
 }
