@@ -1398,3 +1398,44 @@ pub fn max_product(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
 
     (max_product % MOD) as i32
 }
+
+pub struct WordDictionary {
+    children: HashMap<char, WordDictionary>,
+}
+
+impl WordDictionary {
+
+    pub fn new() -> Self {
+        WordDictionary { children: HashMap::new() }
+    }
+    
+    pub fn add_word(&mut self, word: String) {
+        let mut current = self;
+
+        for ch in word.chars() {
+            current = current.children.entry(ch).or_insert_with(|| WordDictionary::new());
+        }
+    }
+    
+    pub fn search(&self, word: String) -> bool {
+        let mut current = self; 
+        let mut result = false;
+
+        for ch in word.chars() {
+            match ch {
+                '.' => continue,
+                _ => {
+                    if let Some(trie) = current.children.get(&ch) {
+                        current = trie;
+                    } else {
+                        result = false;
+                        break;
+                    }
+                    result = true;
+                }
+            }
+        }
+
+        result
+    }
+}
