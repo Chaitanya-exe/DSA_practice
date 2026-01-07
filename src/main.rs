@@ -1401,12 +1401,13 @@ pub fn max_product(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
 
 pub struct WordDictionary {
     children: HashMap<char, WordDictionary>,
+    is_end: bool
 }
 
 impl WordDictionary {
 
     pub fn new() -> Self {
-        WordDictionary { children: HashMap::new() }
+        WordDictionary { children: HashMap::new(), is_end: false }
     }
     
     pub fn add_word(&mut self, word: String) {
@@ -1415,27 +1416,36 @@ impl WordDictionary {
         for ch in word.chars() {
             current = current.children.entry(ch).or_insert_with(|| WordDictionary::new());
         }
+        current.is_end = true;
     }
     
     pub fn search(&self, word: String) -> bool {
-        let mut current = self; 
-        let mut result = false;
+        
 
-        for ch in word.chars() {
-            match ch {
-                '.' => continue,
-                _ => {
-                    if let Some(trie) = current.children.get(&ch) {
-                        current = trie;
-                    } else {
-                        result = false;
-                        break;
+        fn dfs(node: &WordDictionary, chars: &Vec<char>, index: usize) -> bool{
+            if index == chars.len() {
+                return node.is_end;
+            }
+
+            let ch = chars[index];
+
+            if ch == '.' {
+                for child in node.children.values() {
+                    if dfs(&child, chars, index+1) {
+                        return true;
                     }
-                    result = true;
+                }
+                false
+            } else {
+                match node.children.get(&ch) {
+                    Some(child) => dfs(child, chars, index+1),
+                    None => return false
                 }
             }
         }
 
-        result
+        let chars: Vec<char> = word.chars().collect();
+
+        dfs(self, &chars, 0)
     }
 }
