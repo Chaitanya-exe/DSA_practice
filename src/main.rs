@@ -1451,5 +1451,44 @@ impl WordDictionary {
 }
 
 pub fn find_words(board: Vec<Vec<char>>, words: Vec<String>) -> Vec<String> {
+    struct Trie{
+        children: HashMap<char, Trie>,
+        is_end: bool
+    } 
+
+    impl Trie{
+        pub fn new() -> Self {
+            Trie{
+                children: HashMap::new(),
+                is_end: false
+            }
+        }
         
+        pub fn insert(&mut self, word: String) {
+            let mut current = self;
+
+            for ch in word.chars() {
+                current = current.children.entry(ch).or_insert_with(|| Trie::new());
+            }
+            current.is_end = true;
+        }
+    }
+    let mut output: Vec<String> = vec![];
+    let mut trie = Trie::new();
+    for word in &words {
+        trie.insert(word.to_string());
+    }
+
+    fn traverse_board(board: &mut Vec<Vec<char>>, row: usize, col: usize, trie: &mut Trie, output: Vec<String>) {
+        if trie.is_end {
+            
+            trie.is_end = false;
+        }
+
+        if row >= board.len() || col >= board[0].len() {
+            return;
+        }
+
+    }
+    output
 }
