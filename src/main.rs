@@ -1305,21 +1305,19 @@ pub fn max_level_sum(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     answer_level as i32
 }
 
-
-pub struct Trie{
+pub struct Trie {
     children: HashMap<char, Trie>,
-    is_end_of_word: bool
+    is_end_of_word: bool,
 }
 
 impl Trie {
-
     pub fn new() -> Self {
-        Trie{
+        Trie {
             children: HashMap::new(),
-            is_end_of_word: false
+            is_end_of_word: false,
         }
     }
-    
+
     pub fn insert(&mut self, word: String) {
         let mut current = self;
 
@@ -1328,18 +1326,17 @@ impl Trie {
         }
         current.is_end_of_word = true;
     }
-    
+
     pub fn search(&self, word: String) -> bool {
         let mut result = false;
         let mut current = self;
         for ch in word.chars() {
-            if let Some(trie) = current.children.get(&ch){
+            if let Some(trie) = current.children.get(&ch) {
                 current = trie;
             } else {
                 result = false;
                 break;
             }
-
         }
         if current.is_end_of_word {
             result = true;
@@ -1347,14 +1344,14 @@ impl Trie {
 
         result
     }
-    
+
     pub fn starts_with(&self, prefix: String) -> bool {
         let mut current = self;
 
         for ch in prefix.chars() {
             match current.children.get(&ch) {
                 Some(trie) => current = trie,
-                None => return false
+                None => return false,
             }
         }
         true
@@ -1364,7 +1361,7 @@ impl Trie {
 pub fn max_product(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     let mut max_product = i64::MIN;
     const MOD: i64 = 1_000_000_007;
-    fn tree_sum (node: &Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    fn tree_sum(node: &Option<Rc<RefCell<TreeNode>>>) -> i32 {
         match node {
             Some(cell) => {
                 let n = cell.borrow();
@@ -1373,25 +1370,29 @@ pub fn max_product(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
                 let right_sum = tree_sum(&n.right);
 
                 n.val + left_sum + right_sum
-            }, 
-            None => 0
+            }
+            None => 0,
         }
-    }        
+    }
 
     let total_sum = tree_sum(&root) as i64;
 
-    fn find_product(node: &Option<Rc<RefCell<TreeNode>>>, product: &mut i64, total_sum: &i64) -> i64{
+    fn find_product(
+        node: &Option<Rc<RefCell<TreeNode>>>,
+        product: &mut i64,
+        total_sum: &i64,
+    ) -> i64 {
         match node {
             Some(cell) => {
                 let n = cell.borrow();
                 let left_sum = find_product(&n.left, product, total_sum);
                 let right_sum = find_product(&n.right, product, total_sum);
                 let sub_tree_sum = n.val as i64 + left_sum + right_sum;
-                    
+
                 *product = (*product).max((*total_sum - sub_tree_sum) * sub_tree_sum);
                 sub_tree_sum
-            },
-            None => 0
+            }
+            None => 0,
         }
     }
     find_product(&root, &mut max_product, &total_sum);
@@ -1401,28 +1402,31 @@ pub fn max_product(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
 
 pub struct WordDictionary {
     children: HashMap<char, WordDictionary>,
-    is_end: bool
+    is_end: bool,
 }
 
 impl WordDictionary {
-
     pub fn new() -> Self {
-        WordDictionary { children: HashMap::new(), is_end: false }
+        WordDictionary {
+            children: HashMap::new(),
+            is_end: false,
+        }
     }
-    
+
     pub fn add_word(&mut self, word: String) {
         let mut current = self;
 
         for ch in word.chars() {
-            current = current.children.entry(ch).or_insert_with(|| WordDictionary::new());
+            current = current
+                .children
+                .entry(ch)
+                .or_insert_with(|| WordDictionary::new());
         }
         current.is_end = true;
     }
-    
-    pub fn search(&self, word: String) -> bool {
-        
 
-        fn dfs(node: &WordDictionary, chars: &Vec<char>, index: usize) -> bool{
+    pub fn search(&self, word: String) -> bool {
+        fn dfs(node: &WordDictionary, chars: &Vec<char>, index: usize) -> bool {
             if index == chars.len() {
                 return node.is_end;
             }
@@ -1431,15 +1435,15 @@ impl WordDictionary {
 
             if ch == '.' {
                 for child in node.children.values() {
-                    if dfs(&child, chars, index+1) {
+                    if dfs(&child, chars, index + 1) {
                         return true;
                     }
                 }
                 false
             } else {
                 match node.children.get(&ch) {
-                    Some(child) => dfs(child, chars, index+1),
-                    None => return false
+                    Some(child) => dfs(child, chars, index + 1),
+                    None => return false,
                 }
             }
         }
@@ -1451,19 +1455,19 @@ impl WordDictionary {
 }
 
 pub fn find_words(board: Vec<Vec<char>>, words: Vec<String>) -> Vec<String> {
-    struct Trie{
+    struct Trie {
         children: HashMap<char, Trie>,
-        is_end: bool
-    } 
+        is_end: bool,
+    }
 
-    impl Trie{
+    impl Trie {
         pub fn new() -> Self {
-            Trie{
+            Trie {
                 children: HashMap::new(),
-                is_end: false
+                is_end: false,
             }
         }
-        
+
         pub fn insert(&mut self, word: String) {
             let mut current = self;
 
@@ -1479,16 +1483,79 @@ pub fn find_words(board: Vec<Vec<char>>, words: Vec<String>) -> Vec<String> {
         trie.insert(word.to_string());
     }
 
-    fn traverse_board(board: &mut Vec<Vec<char>>, row: usize, col: usize, trie: &mut Trie, output: Vec<String>) {
+    fn traverse_board(
+        board: &mut Vec<Vec<char>>,
+        row: usize,
+        col: usize,
+        trie: &mut Trie,
+        output: Vec<String>,
+    ) {
         if trie.is_end {
-            
             trie.is_end = false;
         }
 
-        if row >= board.len() || col >= board[0].len() {
+        if (row >= board.len() || col >= board[0].len()) || board[row][col] == '#' {
             return;
         }
-
     }
     output
+}
+
+pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
+
+    let mut indices = HashMap::new();
+
+    for (i, n) in nums.iter().enumerate() {
+        let comp = target - n;
+
+        if indices.contains_key(&comp) {
+            let index = indices.get(&comp).unwrap();
+            return vec![*index, i as i32]
+        }
+        indices.insert(n, i as i32);
+    }
+    
+    return vec![];
+}
+
+pub fn subarray_sum_rev(nums: Vec<i32>, k: i32) -> i32 {
+    let (mut sum, mut count) = (0, 0);
+    let mut seen = HashMap::new();
+
+    for n in nums {
+        if sum == k {
+            count += 1;
+        }
+
+        sum += n;
+        
+        if let Some(freq) = seen.get(&(sum-k)) {
+            count += freq;
+        }
+        
+        *seen.entry(sum).or_insert(0) += 1;
+    }
+
+    count
+}
+
+pub fn subarrays_div_by_k(nums: Vec<i32>, k: i32) -> i32 {
+    let (mut sum, mut count) = (0, 0);
+    let mut seen = HashMap::new();
+
+    for num in nums {
+        sum += num;
+        if sum % k == 0 {
+            count += 1;
+        }
+
+        let remainder = sum % k;
+        if let Some(freq) = seen.get(&remainder) {
+            count += freq;
+        }
+        *seen.entry(remainder).or_insert(0) += 1;
+
+    }
+
+    count
 }
