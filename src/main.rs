@@ -1559,3 +1559,18 @@ pub fn subarrays_div_by_k(nums: Vec<i32>, k: i32) -> i32 {
 
     count
 }
+
+pub fn max_profit(prices: Vec<i32>) -> i32 {
+    let mut min_so_far = i32::MAX;
+    let mut profit = 0;
+
+    for i in 0..prices.len(){
+        if prices[i] < min_so_far {
+            min_so_far = prices[i];
+        }
+
+        profit = profit.max(prices[i] - min_so_far);
+    }
+
+    profit
+}
