@@ -1574,3 +1574,48 @@ pub fn max_profit(prices: Vec<i32>) -> i32 {
 
     profit
 }
+
+pub fn num_subarrays_with_sum(nums: Vec<i32>, goal: i32) -> i32 {
+    let mut count = 0;
+    let mut prefix = HashMap::new();
+    let mut sum = 0;
+    for num in nums {
+        sum += num;
+
+        if sum == goal {
+            count += 1;
+        }
+
+        if let Some(freq) = prefix.get(&sum) {
+            count += freq;
+        }
+        *prefix.entry(sum).or_insert(0) += 1;
+    }
+
+    count        
+}
+
+pub fn check_subarray_sum(nums: Vec<i32>, k: i32) -> bool {
+    let mut prefix: HashMap<i32, i32> = HashMap::new();
+    let mut result = false;
+    let mut sum = 0;
+
+    prefix.insert(0, -1);
+
+    for (i, num) in nums.iter().enumerate() {
+        sum += num;
+        let remainder = ((sum % k) + k) % k;
+
+        if let Some(idx) = prefix.get(&remainder){
+            if i as i32 - idx >= 2 {
+                result = true;
+            }
+        } else {
+            prefix.insert(sum % k, i as i32);
+        }
+        
+
+    }
+
+    result
+}
