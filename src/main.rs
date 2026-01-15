@@ -1619,3 +1619,63 @@ pub fn check_subarray_sum(nums: Vec<i32>, k: i32) -> bool {
 
     result
 }
+
+pub fn min_eating_speed(piles: Vec<i32>, h: i32) -> i32 {
+    let (mut low, mut high) = (1, *piles.iter().max().unwrap());
+    
+    fn check_speed(piles: &Vec<i32>, hours: i32, speed: i32) -> bool {
+        let mut hrs_taken = 0;
+        for pile in piles {
+            if *pile <= speed {
+                hrs_taken += 1;
+            } else {
+                hrs_taken += (pile + speed - 1) / speed;
+            }
+        }
+
+        return hrs_taken < hours;
+    }
+
+    while low < high {
+        let mid = (low + high) / 2;
+
+        if check_speed(&piles, h, mid) {
+            high = mid;
+        } else {
+            low = mid + 1;
+        }
+    } 
+
+    low as i32
+}
+
+pub fn ship_within_days(weights: Vec<i32>, days: i32) -> i32 {
+    let (mut low, mut high) = (*weights.iter().max().unwrap(), weights.iter().sum::<i32>());        
+
+    fn check_capacity(weights: &Vec<i32>, days: i32, capacity: i32) -> bool {
+        let mut ship = 0;
+        let mut days_taken = 1;
+        for weight in weights {
+            if (ship + weight) <= capacity {
+                ship += weight;
+            } else {
+                days_taken += 1;
+                ship = *weight;
+            }
+        }
+
+        return days_taken <= days;
+    }
+
+    while low < high {
+        let mid = (low + high) / 2;
+
+        if check_capacity(&weights, days, mid) {
+            high = mid;
+        } else {
+            low = mid + 1;
+        }
+    }
+    
+    low
+}
