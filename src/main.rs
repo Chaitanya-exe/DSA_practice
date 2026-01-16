@@ -1679,3 +1679,36 @@ pub fn ship_within_days(weights: Vec<i32>, days: i32) -> i32 {
     
     low
 }
+
+pub fn max_profit_ii(prices: Vec<i32>) -> i32 {
+    let mut profit = 0;
+
+    for i in 1..prices.len() {
+        if prices[i] > prices[i - 1] {
+            profit += prices[i] - prices[i - 1];
+        }
+    }
+
+    profit   
+}
+
+pub fn find_max_length(nums: Vec<i32>) -> i32 {
+    let mut prefix = HashMap::new();
+    let mut length = 0;
+    let mut sum = 0;
+
+    for i in 0..nums.len() as i32 {
+        if nums[i as usize] == 1 {
+            sum += 1;
+        } else {
+            sum -= 1;
+        }
+
+        if let Some(idx) = prefix.get(&0) {
+            length = length.max(i - idx);
+        } 
+        prefix.insert(sum, i); 
+    }        
+
+    length as i32
+}
