@@ -1502,7 +1502,6 @@ pub fn find_words(board: Vec<Vec<char>>, words: Vec<String>) -> Vec<String> {
 }
 
 pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
-
     let mut indices = HashMap::new();
 
     for (i, n) in nums.iter().enumerate() {
@@ -1510,11 +1509,11 @@ pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
 
         if indices.contains_key(&comp) {
             let index = indices.get(&comp).unwrap();
-            return vec![*index, i as i32]
+            return vec![*index, i as i32];
         }
         indices.insert(n, i as i32);
     }
-    
+
     return vec![];
 }
 
@@ -1528,11 +1527,11 @@ pub fn subarray_sum_rev(nums: Vec<i32>, k: i32) -> i32 {
         }
 
         sum += n;
-        
-        if let Some(freq) = seen.get(&(sum-k)) {
+
+        if let Some(freq) = seen.get(&(sum - k)) {
             count += freq;
         }
-        
+
         *seen.entry(sum).or_insert(0) += 1;
     }
 
@@ -1554,7 +1553,6 @@ pub fn subarrays_div_by_k(nums: Vec<i32>, k: i32) -> i32 {
             count += freq;
         }
         *seen.entry(remainder).or_insert(0) += 1;
-
     }
 
     count
@@ -1564,7 +1562,7 @@ pub fn max_profit(prices: Vec<i32>) -> i32 {
     let mut min_so_far = i32::MAX;
     let mut profit = 0;
 
-    for i in 0..prices.len(){
+    for i in 0..prices.len() {
         if prices[i] < min_so_far {
             min_so_far = prices[i];
         }
@@ -1592,7 +1590,7 @@ pub fn num_subarrays_with_sum(nums: Vec<i32>, goal: i32) -> i32 {
         *prefix.entry(sum).or_insert(0) += 1;
     }
 
-    count        
+    count
 }
 
 pub fn check_subarray_sum(nums: Vec<i32>, k: i32) -> bool {
@@ -1606,15 +1604,13 @@ pub fn check_subarray_sum(nums: Vec<i32>, k: i32) -> bool {
         sum += num;
         let remainder = ((sum % k) + k) % k;
 
-        if let Some(idx) = prefix.get(&remainder){
+        if let Some(idx) = prefix.get(&remainder) {
             if i as i32 - idx >= 2 {
                 result = true;
             }
         } else {
             prefix.insert(sum % k, i as i32);
         }
-        
-
     }
 
     result
@@ -1622,7 +1618,7 @@ pub fn check_subarray_sum(nums: Vec<i32>, k: i32) -> bool {
 
 pub fn min_eating_speed(piles: Vec<i32>, h: i32) -> i32 {
     let (mut low, mut high) = (1, *piles.iter().max().unwrap());
-    
+
     fn check_speed(piles: &Vec<i32>, hours: i32, speed: i32) -> bool {
         let mut hrs_taken = 0;
         for pile in piles {
@@ -1644,13 +1640,13 @@ pub fn min_eating_speed(piles: Vec<i32>, h: i32) -> i32 {
         } else {
             low = mid + 1;
         }
-    } 
+    }
 
     low as i32
 }
 
 pub fn ship_within_days(weights: Vec<i32>, days: i32) -> i32 {
-    let (mut low, mut high) = (*weights.iter().max().unwrap(), weights.iter().sum::<i32>());        
+    let (mut low, mut high) = (*weights.iter().max().unwrap(), weights.iter().sum::<i32>());
 
     fn check_capacity(weights: &Vec<i32>, days: i32, capacity: i32) -> bool {
         let mut ship = 0;
@@ -1676,7 +1672,7 @@ pub fn ship_within_days(weights: Vec<i32>, days: i32) -> i32 {
             low = mid + 1;
         }
     }
-    
+
     low
 }
 
@@ -1689,7 +1685,7 @@ pub fn max_profit_ii(prices: Vec<i32>) -> i32 {
         }
     }
 
-    profit   
+    profit
 }
 
 pub fn find_max_length(nums: Vec<i32>) -> i32 {
@@ -1706,9 +1702,41 @@ pub fn find_max_length(nums: Vec<i32>) -> i32 {
 
         if let Some(idx) = prefix.get(&0) {
             length = length.max(i - idx);
-        } 
-        prefix.insert(sum, i); 
-    }        
+        }
+        prefix.insert(sum, i);
+    }
 
     length as i32
+}
+
+pub fn fib(n: i32) -> i32 {
+    match n {
+        0 => 0,
+        1 => 1,
+        _ => {
+            let mut f_n = vec![0; (n + 1) as usize];
+            f_n[0] = 0;
+            f_n[1] = 1;
+            for i in 2..=n as usize {
+                f_n[i] = f_n[i - 1] + f_n[i - 2];
+            }
+            return f_n[n as usize];
+        }
+    }
+}
+
+pub fn climb_stairs(n: i32) -> i32 {
+    if n <= 1 {
+        return 1;
+    }
+
+    let mut dp = vec![0; (n + 1) as usize];
+    dp[0] = 1;
+    dp[1] = 1;
+
+    for i in 2..=n as usize {
+        dp[i] = dp[i - 1] + dp[i - 2];
+    }
+
+    return dp[n as usize];
 }
