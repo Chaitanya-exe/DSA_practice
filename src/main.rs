@@ -1740,3 +1740,13 @@ pub fn climb_stairs(n: i32) -> i32 {
 
     return dp[n as usize];
 }
+
+pub fn min_cost_climbing_stairs(cost: Vec<i32>) -> i32 {
+    let mut dp: Vec<i32> = vec![0 ;(cost.len() + 1) as usize]; 
+    let n = cost.len();
+    for i in 2..n {
+        dp[i] = (dp[i - 1] + cost[i - 1]).min(dp[i - 2] + cost[i - 2]);
+    }   
+
+    return dp[n];       
+}
