@@ -1750,3 +1750,16 @@ pub fn min_cost_climbing_stairs(cost: Vec<i32>) -> i32 {
 
     return dp[n];       
 }
+
+pub fn rob(nums: Vec<i32>) -> i32 {
+    let n = nums.len();
+    let mut prev1 = nums[0];
+    let mut prev2 = nums[0].max(*nums.get(1).unwrap_or(&0));
+
+    for i in 2..=n {
+        let curr = (nums[i] + prev1).max(prev2);
+        prev2 = prev1;
+        prev1 = curr;
+    }
+    return prev1 as i32;
+}
