@@ -1756,10 +1756,20 @@ pub fn rob(nums: Vec<i32>) -> i32 {
     let mut prev1 = nums[0];
     let mut prev2 = nums[0].max(*nums.get(1).unwrap_or(&0));
 
-    for i in 2..=n {
+    for i in 2..n {
         let curr = (nums[i] + prev1).max(prev2);
         prev2 = prev1;
         prev1 = curr;
     }
     return prev1 as i32;
+}
+
+pub fn can_jump(nums: Vec<i32>) -> bool {
+    let mut max_reach = nums[0];
+    let n = nums.len();
+    for i in 0..n as i32 {
+        if i > max_reach { return false;}
+        max_reach = max_reach.max(i + nums[i as usize]);
+    }
+    return max_reach >= (n - 1) as i32;
 }
