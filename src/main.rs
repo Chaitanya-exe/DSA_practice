@@ -1742,13 +1742,13 @@ pub fn climb_stairs(n: i32) -> i32 {
 }
 
 pub fn min_cost_climbing_stairs(cost: Vec<i32>) -> i32 {
-    let mut dp: Vec<i32> = vec![0 ;(cost.len() + 1) as usize]; 
+    let mut dp: Vec<i32> = vec![0; (cost.len() + 1) as usize];
     let n = cost.len();
     for i in 2..n {
         dp[i] = (dp[i - 1] + cost[i - 1]).min(dp[i - 2] + cost[i - 2]);
-    }   
+    }
 
-    return dp[n];       
+    return dp[n];
 }
 
 pub fn rob(nums: Vec<i32>) -> i32 {
@@ -1768,8 +1768,37 @@ pub fn can_jump(nums: Vec<i32>) -> bool {
     let mut max_reach = nums[0];
     let n = nums.len();
     for i in 0..n as i32 {
-        if i > max_reach { return false;}
+        if i > max_reach {
+            return false;
+        }
         max_reach = max_reach.max(i + nums[i as usize]);
     }
     return max_reach >= (n - 1) as i32;
+}
+
+pub fn rob(nums: Vec<i32>) -> i32 {
+    let n = nums.len();
+    if n == 0 {
+        return 0;
+    }
+    if n == 1 {
+        return nums[0];
+    }
+    fn rob_linear(range: &[i32]) -> i32 {
+        let n = range.len();
+        let mut prev2 = range[0];
+        let mut prev1 = range[0].max(*range.get(1).unwrap_or(&0));
+
+        for i in 2..n {
+            let curr = (range[i] + prev2).max(prev1);
+            prev2 = prev1;
+            prev1 = curr;
+        }
+        return prev1 as i32;
+    }
+
+    let ans1 = rob_linear(&nums[0..(n - 1)]);
+    let ans2 = rob_linear(&nums[1..n]);
+    // println!("{} {}", ans1, ans2);
+    return ans1.max(ans2);
 }
