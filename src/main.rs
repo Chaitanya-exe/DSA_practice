@@ -1776,7 +1776,7 @@ pub fn can_jump(nums: Vec<i32>) -> bool {
     return max_reach >= (n - 1) as i32;
 }
 
-pub fn rob(nums: Vec<i32>) -> i32 {
+pub fn rob_ii(nums: Vec<i32>) -> i32 {
     let n = nums.len();
     if n == 0 {
         return 0;
