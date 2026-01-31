@@ -1868,3 +1868,23 @@ pub fn num_decodings(s: String) -> i32 {
     }
     prev1        
 }
+
+pub fn delete_and_earn(nums: Vec<i32>) -> i32 {
+    let mut freq = HashMap::new();
+
+    nums.iter().for_each(|x| *freq.entry(*x).or_insert(0) += 1);
+
+    let n = *nums.iter().max().unwrap() as usize;
+
+    let mut prev2 = 0;
+    let mut prev1 = 1 * freq.get(&1).unwrap_or(&0);
+
+    for i in 2..=n {
+        let points = (i as i32) * freq.get(&(i as i32)).unwrap_or(&0);
+        let curr = prev1.max(prev2 + points);
+        prev2 = prev1;
+        prev1 = curr;
+    }
+
+    prev1
+}
